@@ -6,6 +6,7 @@ export const createPost = (req, res) => {
   post.title = req.body.title;
   post.content = req.body.content;
   post.tags = req.body.tags;
+  post.author = req.user.username;
 
   post.save()
   .then(result => {
@@ -42,7 +43,7 @@ export const getPost = (req, res) => {
 };
 
 export const deletePost = (req, res) => {
-  Post.remove(req.params.id)
+  Post.findByIdAndRemove(req.params.id)
   .then(result => {
     res.json(result);
   })

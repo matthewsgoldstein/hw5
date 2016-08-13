@@ -10,24 +10,30 @@ export const signin = (req, res, next) => {
 export const signup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const passwordConfirm = req.body.passwordConfirm;
+  const username = req.body.username;
 
-  if (!email || !password) {
-    return res.status(422).send('You must provide email and password');
+  if (!email || !password || !username) {
+    return res.status(422).send('You must provide email, username, and password!');
+  }
+
+  if (password !== passwordConfirm) {
+    return res.status(422).send('Password and password confirmation must match!');
   }
 
   // 🚀 TODO:
   // here you should do a mongo query to find if a user already exists with this email.
-  // if user exists then return an error. If not, use the User model to create a new user.
+  // if user exists then return an error. If not, use   the User model to create a new user.
 
-  User.find()
+  User.findOne({ email })
   .then(result => {
-    if (result == null) {
+    if (!result) {
       const user = new User();
       user.username = req.body.username;
       user.email = req.body.email;
       user.password = req.body.password;
       user.save();
-      res.json({ message: 'User created!' });
+      res.json({ token: tokenForUser(user) });
     } else {
       res.json({ message: 'User was already there!' });
     }
@@ -37,7 +43,6 @@ export const signup = (req, res, next) => {
   });
 
   // and then return a token same as you did in in signin
-  res.send({ token: tokenForUser(req.user) });
 };
 
 // encodes a new token for a user object
