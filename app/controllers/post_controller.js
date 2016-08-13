@@ -22,7 +22,7 @@ export const getPosts = (req, res) => {
   .then(result => {
     const cleanPosts = (posts) => {
       return posts.map(post => {
-        return { id: post._id, title: post.title, tags: post.tags };
+        return { id: post._id, title: post.title, tags: post.tags, author: post.author };
       });
     };
     res.json(cleanPosts(result));
@@ -43,8 +43,9 @@ export const getPost = (req, res) => {
 };
 
 export const deletePost = (req, res) => {
-  Post.findByIdAndRemove(req.params.id)
+  Post.findById(req.params.id)
   .then(result => {
+    if (req.user.username === result.author) result.remove();
     res.json(result);
   })
   .catch(error => {
@@ -55,16 +56,18 @@ export const deletePost = (req, res) => {
 export const updatePost = (req, res) => {
   Post.findById(req.params.id)
   .then(result => {
-    if (req.body.tags) {
-      result.tags = req.body.tags;
+    if (req.user.username === result.author) {
+      if (req.body.tags) {
+        result.tags = req.body.tags;
+      }
+      if (req.body.content) {
+        result.content = req.body.content;
+      }
+      if (req.body.title) {
+        result.title = req.body.title;
+      }
+      result.save();
     }
-    if (req.body.content) {
-      result.content = req.body.content;
-    }
-    if (req.body.title) {
-      result.title = req.body.title;
-    }
-    result.save();
   });
   res.json({ message: `Updated post ${req.params.id}!` });
 };

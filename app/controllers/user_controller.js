@@ -17,10 +17,6 @@ export const signup = (req, res, next) => {
     return res.status(422).send('You must provide email, username, and password!');
   }
 
-  if (password !== passwordConfirm) {
-    return res.status(422).send('Password and password confirmation must match!');
-  }
-
   // 🚀 TODO:
   // here you should do a mongo query to find if a user already exists with this email.
   // if user exists then return an error. If not, use   the User model to create a new user.
