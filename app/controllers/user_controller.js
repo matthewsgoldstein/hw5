@@ -2,7 +2,6 @@ import jwt from 'jwt-simple';
 import config from '../config';
 import User from '../models/user_model';
 
-
 export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
@@ -10,7 +9,6 @@ export const signin = (req, res, next) => {
 export const signup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const passwordConfirm = req.body.passwordConfirm;
   const username = req.body.username;
 
   if (!email || !password || !username) {
