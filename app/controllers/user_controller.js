@@ -2,6 +2,7 @@ import jwt from 'jwt-simple';
 import config from '../config';
 import User from '../models/user_model';
 
+
 export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
